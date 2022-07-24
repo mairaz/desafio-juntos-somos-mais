@@ -1,0 +1,9 @@
+<p>
+ Por estados
+</p>
+<ul *ngFor="let estado of estados">
+  <li>
+    <input type="checkbox" name={{estado.sigla}} id="" value={{estado.nome}} (change)="addStateToFilter($event)">
+    <label for={{estado.sigla}}>{{estado.nome}}</label>
+  </li>
+</ul>
