@@ -1,10 +1,12 @@
-<p>
- Por estados
-</p>
-<ul *ngFor="let estado of displayEstados">
-  <li>
-    <input type="checkbox" name={{estado.sigla}} id="" value={{estado.nome}} (change)="addStateToFilter($event)">
-    <label for={{estado.sigla}}>{{estado.nome}}</label>
-  </li>
-</ul>
-<p *ngIf="this.estados > displayEstados"(click)="loadMore()">Carregar mais..</p>
+<div class="m-2">
+  <p class="mb-3">
+    Por estados
+  </p>
+  <ul *ngFor="let estado of displayEstados">
+    <li class="mb-2">
+      <input type="checkbox" class="me-2"name={{estado.sigla}} id="" value={{estado.nome}} (change)="addStateToFilter($event)">
+      <label for={{estado.sigla}}>{{estado.nome}}</label>
+    </li>
+  </ul>
+  <p class="load-link"*ngIf="this.estados > displayEstados" (click)="loadMore()">Carregar mais..</p>
+</div>

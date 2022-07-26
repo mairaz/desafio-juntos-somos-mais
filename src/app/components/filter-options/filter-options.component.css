@@ -1,3 +1,11 @@
-ul li {
-  list-style:none
+.load-link{
+  display:inline-block;
+  padding:3px;
+  color: #B0B0B0
 }
+
+.load-link:hover{
+  color: #666;
+  cursor:pointer;
+}
+

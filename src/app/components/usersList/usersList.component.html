@@ -1,10 +1,11 @@
-<h6>Exibindo {{users.length}} de {{totalUsers}}</h6>
+<p class="my-4" >Exibindo {{users.length}} de {{totalUsers}}</p>
 <div class="row">
-  <div class="col-md-3 border m-2 " *ngFor="let user of users; let i = index">
-  <div class="p-5 d-flex flex-column align-items-center ">
+  <div class="col-12 col-md-3 border m-2 " *ngFor="let user of users; let i = index">
+  <div class="py-5 d-flex flex-column align-items-center ">
      <img src={{user.picture.thumbnail}}>
-   <p>{{user.name.first | titlecase }} {{user.name.last | titlecase}}</p>
-   <p>{{user.location.state}} </p>
+   <p class="username my-4">{{user.name.first | titlecase }} {{user.name.last | titlecase}}</p>
+   <p>{{user.location.city | titlecase}} </p>
+   <p>{{user.location.state | titlecase}} </p>
   </div>
   </div>
 </div>
