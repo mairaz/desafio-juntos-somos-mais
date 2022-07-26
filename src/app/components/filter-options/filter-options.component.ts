@@ -9,6 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class FilterOptionsComponent implements OnInit {
 
   filtersAdded: string[] = []
+  initialSize = 1
+  finalSize = 5
 
   estados = [
         {"nome": "Acre", "sigla": "AC"},
@@ -40,18 +42,27 @@ export class FilterOptionsComponent implements OnInit {
         {"nome": "Tocantins", "sigla": "TO"}
 ]
 
+displayEstados: any[] = this.estados.slice(0, this.finalSize)
+
+
   constructor(private filterService: FilterService) { }
 
   ngOnInit() {
   }
 
-  addStateToFilter(event: Event){
 
+  loadMore(){
+    this.initialSize++
+    this.displayEstados = [...this.estados.slice(0, this.finalSize*this.initialSize )]
+    console.log(this.displayEstados)
+  }
+
+  addStateToFilter(event: Event){
     const state = event.target as HTMLInputElement
     if(state.checked){
      this.filtersAdded = [...this.filtersAdded, state.value.toLocaleLowerCase()]
     }else{
-     this.filtersAdded = this.filtersAdded.filter(filter => filter !== state.value.toLocaleLowerCase() )
+     this.filtersAdded = this.filtersAdded.filter(filter => filter !== state.value.toLocaleLowerCase())
     }
     this.filterService.setFilters(this.filtersAdded)
   }

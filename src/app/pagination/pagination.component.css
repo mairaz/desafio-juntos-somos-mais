@@ -1,0 +1,21 @@
+.arrow{
+  display:block;
+  height:50px;
+}
+.arrow-box{
+display:inline-flex;
+align-items:center;
+justify-content:Center;
+ width:32px;
+ height:32px;
+  border-radius:100%;
+}
+
+.active{
+  width:32px;
+  border-bottom: 4px solid  #9B9B9B;
+}
+
+.rotate-svg{
+  transform: rotate(180deg)
+}

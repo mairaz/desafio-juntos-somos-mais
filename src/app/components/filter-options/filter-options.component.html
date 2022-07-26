@@ -1,9 +1,10 @@
 <p>
  Por estados
 </p>
-<ul *ngFor="let estado of estados">
+<ul *ngFor="let estado of displayEstados">
   <li>
     <input type="checkbox" name={{estado.sigla}} id="" value={{estado.nome}} (change)="addStateToFilter($event)">
     <label for={{estado.sigla}}>{{estado.nome}}</label>
   </li>
 </ul>
+<p *ngIf="this.estados > displayEstados"(click)="loadMore()">Carregar mais..</p>

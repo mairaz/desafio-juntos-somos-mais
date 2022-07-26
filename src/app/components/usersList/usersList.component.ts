@@ -1,7 +1,8 @@
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Observable, mergeMap } from 'rxjs';
 import { UsersService } from './../../services/users.service';
 import { Component, OnInit } from '@angular/core';
 import { FilterService } from 'src/app/services/filter.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-usersList',
@@ -16,14 +17,17 @@ export class UsersListComponent implements OnInit {
   users: any[] = [];
   page = 10;
   stateFilters: any = []
+  nameFilter: any = []
 
   constructor(
     private userService: UsersService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.usersCount()
+
     this.filterService.getFilters().subscribe((res) => {
       this.filterByState(res)
       this.stateFilters = res
@@ -32,56 +36,103 @@ export class UsersListComponent implements OnInit {
     this.getUsers()
   }
 
-  usersCount() {
-    this.userService.getAUsers().subscribe((users) => {
-      this.totalUsers = users.length
-      this.allUsers = users
 
-    })
-  }
 
-  getUsers() {
-    this.userService.getUsersPagination().
-      subscribe(res => this.users = res)
+  getUsers(page: number = 1) {
+    this.userService.getAUsers(page).
+      subscribe(res => {
+        this.users = res.results
+        this.totalUsers = res.totalResults
+      })
   }
 
 
 
-  filterByState(state: string[]): any {
-    if (!state.length) {
-      this.getUsers()
-      this.usersCount()
+  filterByState(states: string[], page: number = 1): any {
+
+    if(!!this.nameFilter.length && !states.length){
+      this.userService.filterByName(this.nameFilter, page).subscribe( res => {
+        this.users = res.results
+        this.totalUsers = res.totalResults
+        this.filteredUsers = res.results
+      })
       return
     }
-    this.filteredUsers = this.allUsers.
-      filter(user => state.includes(user.location.state));
-    this.totalUsers = this.filteredUsers.length
-    this.users = this.filteredUsers.slice(0, this.page)
+
+    if(!!this.nameFilter.length && !!states.length){
+      this.users = states.flatMap(state => this.filteredUsers.filter(user=> (state.includes(user.location.state))))
+      this.totalUsers = this.users.length
+      return
+    }
+
+    if (!!states.length) {
+      this.userService.filterByState(states, page).subscribe(ress => {
+        this.users = ress.results
+        this.totalUsers = ress.totalResults
+        this.filteredUsers = ress.results
+      })
+      return
+    }
+
+    this.getUsers()
+
   }
 
   getNameForSearchUser() {
     this.filterService.getSearchFilter().pipe(
       debounceTime(800),
       distinctUntilChanged()).
-      subscribe(res => this.filterByName(res))
+      subscribe(res => {
+        this.filterByName(res)
+        this.nameFilter = res
+      })
   }
 
-  filterByName(typedName: string) {
-    const foundUser = this.allUsers.filter(({ name }) => {
-      return `${name.first.toLowerCase()}`.includes(typedName.toLowerCase()) || `${name.last.toLowerCase()}`.includes(typedName.toLowerCase())
-    })
-    this.users = foundUser.slice(0, this.page);
-    this.totalUsers = foundUser.length
-
-  }
-
-  goToPage(e: number) {
-    if (!this.stateFilters.length) {
-      this.userService.getUsersPagination(e).
-        subscribe(res => this.users = res)
-        return
+  filterByName(typedName: string, page = 1) {
+    if(!!this.stateFilters.length && !typedName.length){
+      this.userService.filterByState(this.stateFilters, page).subscribe(res => {
+        this.users = res.results
+        this.totalUsers = res.totalResults
+        this.filteredUsers = res.results
+        console.log(1)
+      })
+      return
     }
-    this.users = this.filteredUsers.slice(e*this.page - this.page, e*this.page)
+
+    if (!!this.stateFilters.length) {
+      this.users = this.users.filter(({name})=> name.last.includes(typedName))
+      this.totalUsers = this.users.length
+      console.log(2)
+      return
+    }
+
+    if (!!typedName.length) {
+      this.userService.filterByName(typedName, page).subscribe(res => {
+        this.users = res.results
+        this.totalUsers = res.totalResults
+        this.filteredUsers = res.results
+        console.log(3)
+      })
+      return
+    }
+
+
+    this.getUsers()
+
+
+
+  }
+
+  goToPage(page: number) {
+    if (!!this.nameFilter.length) {
+      this.filterByName(this.nameFilter, page)
+      return
+    }
+    if (!!this.stateFilters.length) {
+      this.filterByState(this.stateFilters, page)
+      return
+    }
+    this.getUsers(page)
   }
 
 }

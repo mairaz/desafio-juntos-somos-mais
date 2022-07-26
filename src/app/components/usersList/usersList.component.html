@@ -1,16 +1,20 @@
+<h6>Exibindo {{users.length}} de {{totalUsers}}</h6>
 <div class="row">
-  <div class="col-md-3 border m-2" *ngFor="let user of users; let i = index">
-  <div>
-     <img class="rounded-5" src={{user.picture.thumbnail}}>
-   <p>{{user.name.first}} {{user.name.last}}</p>
+  <div class="col-md-3 border m-2 " *ngFor="let user of users; let i = index">
+  <div class="p-5 d-flex flex-column align-items-center ">
+     <img src={{user.picture.thumbnail}}>
+   <p>{{user.name.first | titlecase }} {{user.name.last | titlecase}}</p>
    <p>{{user.location.state}} </p>
   </div>
   </div>
 </div>
-<app-pagination
+<div class="d-flex justify-content-center">
+  <app-pagination
 [setPagination]="{
   'itemsCount': totalUsers,
   'pageSize': page
 }"
 (goToPage)="goToPage($event)"
 ></app-pagination>
+
+</div>
