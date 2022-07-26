@@ -17,6 +17,6 @@ export class SearchInputComponent implements OnInit {
   }
 
   onInput(ev: any){
-    this.filterService.setSearchFilter(ev.target.value)
+    this.filterService.setSearchFilter(ev.target.value.trim())
   }
 }
